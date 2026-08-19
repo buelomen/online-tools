@@ -3,4 +3,4 @@ gunicorn
 pillow
 werkzeug
 markdown
-pypdf
+
