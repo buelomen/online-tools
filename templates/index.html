@@ -1,234 +1,1415 @@
+```html
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ابزارهای آنلاین عکس | تبدیل، فشرده‌سازی و حذف بک‌گراند</title>
+
+    <title>Online Image Tools | Convert, Compress & Edit Images</title>
+    <meta name="description" content="Free online image tools to convert, compress and edit your images quickly and easily.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #7c3aed;
+            --accent: #06b6d4;
+
+            --dark: #0f172a;
+            --text: #334155;
+            --muted: #64748b;
+
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+
+            --radius: 22px;
+            --shadow: 0 15px 40px rgba(15, 23, 42, .08);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Tahoma, 'Segoe UI', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            background: #f0f4f8;
-            color: #1e293b;
-            line-height: 1.6;
+            font-family: "Inter", "Vazirmatn", sans-serif;
+            background:
+                radial-gradient(circle at 10% 10%, rgba(79,70,229,.08), transparent 30%),
+                radial-gradient(circle at 90% 20%, rgba(6,182,212,.08), transparent 30%),
+                var(--bg);
+            color: var(--text);
+            line-height: 1.7;
         }
 
-        /* هدر */
-        header {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+        body.rtl {
+            font-family: "Vazirmatn", "Inter", sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button,
+        input,
+        select {
+            font-family: inherit;
         }
 
         .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 20px;
+            width: min(1180px, calc(100% - 40px));
+            margin: auto;
         }
 
-        .header-content {
+        /* ================= HEADER ================= */
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,.82);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(226,232,240,.7);
+        }
+
+        .navbar {
+            height: 76px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            gap: 30px;
         }
 
         .logo {
-            font-size: 22px;
-            font-weight: bold;
-            color: #2563eb;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--dark);
+            white-space: nowrap;
         }
 
-        /* هیرو */
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: 0 8px 20px rgba(79,70,229,.25);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--muted);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .language-select {
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 12px;
+            padding: 9px 12px;
+            outline: none;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        /* ================= HERO ================= */
+
         .hero {
+            padding: 95px 0 70px;
             text-align: center;
-            padding: 60px 20px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: rgba(79,70,229,.08);
+            filter: blur(90px);
+            border-radius: 50%;
+            top: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 820px;
+            margin: auto;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(79,70,229,.08);
+            color: var(--primary);
+            border: 1px solid rgba(79,70,229,.12);
+            border-radius: 50px;
+            padding: 8px 15px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .badge span {
+            width: 7px;
+            height: 7px;
+            background: #22c55e;
+            border-radius: 50%;
         }
 
         .hero h1 {
-            font-size: 2.4rem;
-            margin-bottom: 15px;
-            color: #0f172a;
+            font-size: clamp(2.4rem, 6vw, 4.5rem);
+            line-height: 1.08;
+            letter-spacing: -2px;
+            color: var(--dark);
+            font-weight: 800;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 .gradient {
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .hero p {
-            font-size: 1.15rem;
-            color: #64748b;
-            max-width: 600px;
-            margin: 0 auto 30px;
+            max-width: 680px;
+            margin: auto;
+            color: var(--muted);
+            font-size: 18px;
         }
 
-        /* کارت ابزارها */
-        .tools {
+        .hero-stats {
+            margin-top: 32px;
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .hero-stats strong {
+            color: var(--dark);
+            font-size: 15px;
+        }
+
+        /* ================= SECTION ================= */
+
+        .section {
+            padding: 35px 0 85px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 38px;
+        }
+
+        .section-header h2 {
+            color: var(--dark);
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .section-header p {
+            color: var(--muted);
+            max-width: 600px;
+            margin: auto;
+        }
+
+        /* ================= TOOLS ================= */
+
+        .tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            padding: 20px 0 60px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
         }
 
         .tool-card {
-            background: white;
-            border-radius: 16px;
-            padding: 30px 25px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            transition: transform 0.2s, box-shadow 0.2s;
-            text-align: center;
+            position: relative;
+            background: rgba(255,255,255,.88);
+            border: 1px solid rgba(226,232,240,.9);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: .3s ease;
+            overflow: hidden;
         }
 
         .tool-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: translateY(-7px);
+            box-shadow: 0 25px 55px rgba(15,23,42,.12);
+            border-color: rgba(79,70,229,.2);
+        }
+
+        .tool-card::after {
+            content: "";
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            background: rgba(79,70,229,.05);
+            border-radius: 50%;
+            top: -60px;
+            right: -50px;
         }
 
         .tool-icon {
-            width: 70px;
-            height: 70px;
-            background: #eff6ff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 32px;
+            width: 64px;
+            height: 64px;
+            display: grid;
+            place-items: center;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+            font-size: 29px;
+            margin-bottom: 22px;
         }
 
-        .tool-card h2 {
-            font-size: 1.35rem;
-            margin-bottom: 12px;
-            color: #1e293b;
+        .tool-card h3 {
+            color: var(--dark);
+            font-size: 21px;
+            margin-bottom: 8px;
         }
 
         .tool-card p {
-            color: #64748b;
-            font-size: 0.95rem;
-            margin-bottom: 20px;
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 22px;
         }
 
-        form {
+        .tool-form {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
-        input[type="file"] {
-            padding: 10px;
-            border: 2px dashed #cbd5e1;
-            border-radius: 10px;
+        .file-input {
+            border: 1.5px dashed #cbd5e1;
+            border-radius: 14px;
+            padding: 14px;
             background: #f8fafc;
+            width: 100%;
             cursor: pointer;
+            font-size: 13px;
         }
 
-        select, input[type="number"] {
-            padding: 10px 14px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 15px;
+        .file-input:hover {
+            border-color: var(--primary);
         }
 
-        button {
-            background: #2563eb;
+        select,
+        input[type="number"] {
+            width: 100%;
+            border: 1px solid var(--border);
+            background: white;
+            padding: 12px 14px;
+            border-radius: 12px;
+            outline: none;
+            color: var(--text);
+        }
+
+        select:focus,
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79,70,229,.08);
+        }
+
+        .btn {
+            width: 100%;
+            border: 0;
+            border-radius: 12px;
+            padding: 13px 18px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 14px;
+            font-weight: 700;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: .25s;
+            box-shadow: 0 8px 20px rgba(79,70,229,.2);
         }
 
-        button:hover {
-            background: #1d4ed8;
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(79,70,229,.28);
         }
 
-        /* فوتر */
-        footer {
-            text-align: center;
-            padding: 30px;
+        .btn.disabled {
+            background: #e2e8f0;
             color: #94a3b8;
-            font-size: 0.9rem;
+            box-shadow: none;
+            cursor: not-allowed;
         }
 
-        /* ریسپانسیو */
-        @media (max-width: 600px) {
-            .hero h1 {
-                font-size: 1.8rem;
+        /* ================= FEATURE STRIP ================= */
+
+        .features {
+            padding: 25px 0 75px;
+        }
+
+        .features-box {
+            background: linear-gradient(135deg, #111827, #1e1b4b);
+            color: white;
+            border-radius: 28px;
+            padding: 35px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            box-shadow: 0 25px 60px rgba(15,23,42,.18);
+        }
+
+        .feature {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            flex: 0 0 44px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: rgba(255,255,255,.1);
+        }
+
+        .feature h4 {
+            margin-bottom: 4px;
+        }
+
+        .feature p {
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+
+        /* ================= ARTICLES ================= */
+
+        .articles {
+            padding: 50px 0 90px;
+        }
+
+        .article-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .article-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: .3s;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+
+        .article-image {
+            height: 175px;
+            background:
+                linear-gradient(135deg, rgba(79,70,229,.85), rgba(6,182,212,.8)),
+                #4f46e5;
+            display: grid;
+            place-items: center;
+            font-size: 45px;
+        }
+
+        .article-content {
+            padding: 22px;
+        }
+
+        .article-category {
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        .article-content h3 {
+            color: var(--dark);
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .article-content p {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            background: #0f172a;
+            color: white;
+            padding: 55px 0 25px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 50px;
+            padding-bottom: 40px;
+        }
+
+        .footer-brand p {
+            color: #94a3b8;
+            max-width: 420px;
+            margin-top: 14px;
+            font-size: 14px;
+        }
+
+        footer h4 {
+            margin-bottom: 15px;
+        }
+
+        footer ul {
+            list-style: none;
+        }
+
+        footer li {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 9px;
+        }
+
+        footer li:hover {
+            color: white;
+        }
+
+        .copyright {
+            border-top: 1px solid rgba(255,255,255,.08);
+            padding-top: 20px;
+            text-align: center;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        /* ================= RTL ================= */
+
+        [dir="rtl"] .nav-links {
+            flex-direction: row;
+        }
+
+        [dir="rtl"] .article-content,
+        [dir="rtl"] .tool-card {
+            text-align: right;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 900px) {
+            .tools-grid,
+            .article-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
-            .tools {
+
+            .features-box {
                 grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .container {
+                width: min(100% - 28px, 1180px);
+            }
+
+            .hero {
+                padding: 70px 0 45px;
+            }
+
+            .hero h1 {
+                letter-spacing: -1px;
+            }
+
+            .hero p {
+                font-size: 15px;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .tools-grid,
+            .article-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .language-select {
+                max-width: 110px;
             }
         }
     </style>
 </head>
+
 <body>
 
-    <header>
-        <div class="container header-content">
-            <div class="logo">ابزار عکس</div>
-        </div>
-    </header>
+<header>
+    <div class="container navbar">
 
+        <a href="#" class="logo">
+            <div class="logo-icon">✦</div>
+            <span data-i18n="brand">ImageTools</span>
+        </a>
+
+        <nav class="nav-links">
+            <a href="#tools" data-i18n="nav_tools">Tools</a>
+            <a href="#articles" data-i18n="nav_articles">Articles</a>
+            <a href="#about" data-i18n="nav_about">About</a>
+        </nav>
+
+        <div class="nav-actions">
+            <select id="language" class="language-select">
+                <option value="en">🇬🇧 English</option>
+                <option value="fa">🇮🇷 فارسی</option>
+                <option value="ar">🇸🇦 العربية</option>
+                <option value="es">🇪🇸 Español</option>
+                <option value="de">🇩🇪 Deutsch</option>
+            </select>
+        </div>
+
+    </div>
+</header>
+
+
+<main>
+
+    <!-- HERO -->
     <section class="hero">
-        <div class="container">
-            <h1>ابزارهای آنلاین عکس</h1>
-            <p>تبدیل فرمت، فشرده‌سازی و حذف بک‌گراند عکس‌ها به سادگی و کاملاً رایگان</p>
-        </div>
-    </section>
+        <div class="container hero-content">
 
-    <section class="container">
-        <div class="tools">
-
-            <!-- تبدیل فرمت -->
-            <div class="tool-card">
-                <div class="tool-icon">🔄</div>
-                <h2>تبدیل فرمت عکس</h2>
-                <p>JPG، PNG و WebP را به هم تبدیل کنید</p>
-                <form action="/convert-image" method="post" enctype="multipart/form-data">
-                    <input type="file" name="file" accept="image/*" required>
-                    <select name="format">
-                        <option value="png">تبدیل به PNG</option>
-                        <option value="jpg">تبدیل به JPG</option>
-                        <option value="webp">تبدیل به WebP</option>
-                    </select>
-                    <button type="submit">تبدیل کن</button>
-                </form>
+            <div class="badge">
+                <span></span>
+                <strong data-i18n="badge">Free online image tools</strong>
             </div>
 
-            <!-- فشرده‌سازی -->
-            <div class="tool-card">
-                <div class="tool-icon">📦</div>
-                <h2>فشرده‌سازی عکس</h2>
-                <p>حجم عکس را کم کنید بدون افت کیفیت زیاد</p>
-                <form action="/compress-image" method="post" enctype="multipart/form-data">
-                    <input type="file" name="file" accept="image/*" required>
-                    <input type="number" name="quality" value="70" min="10" max="100" placeholder="کیفیت (۱۰ تا ۱۰۰)">
-                    <button type="submit">فشرده کن</button>
-                </form>
-            </div>
+            <h1>
+                <span data-i18n="hero1">Powerful tools for</span>
+                <span class="gradient" data-i18n="hero2">your images</span>
+            </h1>
 
-            <!-- حذف بک‌گراند (فعلاً غیرفعال) -->
-            <div class="tool-card">
-                <div class="tool-icon">✂️</div>
-                <h2>حذف بک‌گراند</h2>
-                <p>به زودی فعال می‌شود</p>
-                <button type="button" style="background:#94a3b8; cursor:not-allowed;" disabled>به زودی</button>
+            <p data-i18n="hero_desc">
+                Convert, compress and optimize your images quickly and easily.
+                No installation required.
+            </p>
+
+            <div class="hero-stats">
+                <div>✓ <strong data-i18n="stat1">Free to use</strong></div>
+                <div>✓ <strong data-i18n="stat2">Fast processing</strong></div>
+                <div>✓ <strong data-i18n="stat3">Easy to use</strong></div>
             </div>
 
         </div>
     </section>
 
-    <footer>
+
+    <!-- TOOLS -->
+    <section class="section" id="tools">
         <div class="container">
-            ساخته شده با ❤️ | ابزارهای آنلاین عکس
+
+            <div class="section-header">
+                <h2 data-i18n="tools_title">Online Image Tools</h2>
+                <p data-i18n="tools_desc">
+                    Everything you need to prepare your images for websites,
+                    social media and everyday use.
+                </p>
+            </div>
+
+            <div class="tools-grid">
+
+                <!-- CONVERTER -->
+                <div class="tool-card">
+
+                    <div class="tool-icon">🔄</div>
+
+                    <h3 data-i18n="convert_title">Image Converter</h3>
+
+                    <p data-i18n="convert_desc">
+                        Convert JPG, PNG and WebP images in seconds.
+                    </p>
+
+                    <form action="/convert-image"
+                          method="post"
+                          enctype="multipart/form-data"
+                          class="tool-form">
+
+                        <input
+                            class="file-input"
+                            type="file"
+                            name="file"
+                            accept="image/*"
+                            required
+                        >
+
+                        <select name="format">
+                            <option value="png" data-i18n="png">Convert to PNG</option>
+                            <option value="jpg" data-i18n="jpg">Convert to JPG</option>
+                            <option value="webp" data-i18n="webp">Convert to WebP</option>
+                        </select>
+
+                        <button class="btn" type="submit" data-i18n="convert_btn">
+                            Convert Image
+                        </button>
+
+                    </form>
+                </div>
+
+
+                <!-- COMPRESSOR -->
+                <div class="tool-card">
+
+                    <div class="tool-icon">📦</div>
+
+                    <h3 data-i18n="compress_title">Image Compressor</h3>
+
+                    <p data-i18n="compress_desc">
+                        Reduce image size while keeping great visual quality.
+                    </p>
+
+                    <form action="/compress-image"
+                          method="post"
+                          enctype="multipart/form-data"
+                          class="tool-form">
+
+                        <input
+                            class="file-input"
+                            type="file"
+                            name="file"
+                            accept="image/*"
+                            required
+                        >
+
+                        <input
+                            type="number"
+                            name="quality"
+                            value="70"
+                            min="10"
+                            max="100"
+                            data-i18n-placeholder="quality"
+                            placeholder="Quality (10–100)"
+                        >
+
+                        <button class="btn" type="submit" data-i18n="compress_btn">
+                            Compress Image
+                        </button>
+
+                    </form>
+                </div>
+
+
+                <!-- BACKGROUND REMOVER -->
+                <div class="tool-card">
+
+                    <div class="tool-icon">✂️</div>
+
+                    <h3 data-i18n="remove_title">Background Remover</h3>
+
+                    <p data-i18n="remove_desc">
+                        Remove backgrounds from your images automatically.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="btn disabled"
+                        disabled
+                        data-i18n="coming">
+                        Coming Soon
+                    </button>
+
+                </div>
+
+            </div>
         </div>
-    </footer>
+    </section>
+
+
+    <!-- FEATURES -->
+    <section class="features">
+        <div class="container">
+
+            <div class="features-box">
+
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <div>
+                        <h4 data-i18n="feature1_title">Fast & Simple</h4>
+                        <p data-i18n="feature1_desc">
+                            Get your results quickly with a simple workflow.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">🔒</div>
+                    <div>
+                        <h4 data-i18n="feature2_title">Privacy Friendly</h4>
+                        <p data-i18n="feature2_desc">
+                            Your images are processed securely.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">🌎</div>
+                    <div>
+                        <h4 data-i18n="feature3_title">Available Worldwide</h4>
+                        <p data-i18n="feature3_desc">
+                            Use our tools from any device, anywhere.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- ARTICLES -->
+    <section class="articles" id="articles">
+
+        <div class="container">
+
+            <div class="section-header">
+                <h2 data-i18n="articles_title">Image Tips & Guides</h2>
+
+                <p data-i18n="articles_desc">
+                    Learn how to optimize, convert and use images more effectively.
+                </p>
+            </div>
+
+
+            <div class="article-grid">
+
+                <a href="/articles/reduce-image-size" class="article-card">
+
+                    <div class="article-image">📉</div>
+
+                    <div class="article-content">
+
+                        <div class="article-category"
+                             data-i18n="article_category">
+                            Image Optimization
+                        </div>
+
+                        <h3 data-i18n="article1_title">
+                            How to Reduce Image Size Without Losing Quality
+                        </h3>
+
+                        <p data-i18n="article1_desc">
+                            Learn the best ways to compress images for faster websites.
+                        </p>
+
+                    </div>
+
+                </a>
+
+
+                <a href="/articles/jpg-vs-png" class="article-card">
+
+                    <div class="article-image">🖼️</div>
+
+                    <div class="article-content">
+
+                        <div class="article-category"
+                             data-i18n="article_category">
+                            Image Formats
+                        </div>
+
+                        <h3 data-i18n="article2_title">
+                            JPG vs PNG vs WebP: Which Format Should You Use?
+                        </h3>
+
+                        <p data-i18n="article2_desc">
+                            Compare popular image formats and find the right one.
+                        </p>
+
+                    </div>
+
+                </a>
+
+
+                <a href="/articles/webp-guide" class="article-card">
+
+                    <div class="article-image">🚀</div>
+
+                    <div class="article-content">
+
+                        <div class="article-category"
+                             data-i18n="article_category">
+                            Web Performance
+                        </div>
+
+                        <h3 data-i18n="article3_title">
+                            Why WebP Is Great for Modern Websites
+                        </h3>
+
+                        <p data-i18n="article3_desc">
+                            Discover how modern image formats can improve page speed.
+                        </p>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- FOOTER -->
+
+<footer id="about">
+
+    <div class="container">
+
+        <div class="footer-grid">
+
+            <div class="footer-brand">
+
+                <div class="logo">
+                    <div class="logo-icon">✦</div>
+                    <span data-i18n="brand">ImageTools</span>
+                </div>
+
+                <p data-i18n="footer_desc">
+                    Simple and powerful online tools for converting,
+                    compressing and optimizing your images.
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <h4 data-i18n="footer_tools">Tools</h4>
+
+                <ul>
+                    <li><a href="#tools" data-i18n="convert_title">Image Converter</a></li>
+                    <li><a href="#tools" data-i18n="compress_title">Image Compressor</a></li>
+                    <li><a href="#tools" data-i18n="remove_title">Background Remover</a></li>
+                </ul>
+
+            </div>
+
+
+            <div>
+
+                <h4 data-i18n="footer_info">Information</h4>
+
+                <ul>
+                    <li><a href="#articles" data-i18n="nav_articles">Articles</a></li>
+                    <li><a href="#" data-i18n="privacy">Privacy Policy</a></li>
+                    <li><a href="#" data-i18n="contact">Contact</a></li>
+                </ul>
+
+            </div>
+
+        </div>
+
+
+        <div class="copyright">
+            © 2026 ImageTools. <span data-i18n="rights">All rights reserved.</span>
+        </div>
+
+    </div>
+
+</footer>
+
+
+<script>
+
+const translations = {
+
+    en: {
+        brand: "ImageTools",
+        nav_tools: "Tools",
+        nav_articles: "Articles",
+        nav_about: "About",
+
+        badge: "Free online image tools",
+
+        hero1: "Powerful tools for",
+        hero2: "your images",
+
+        hero_desc: "Convert, compress and optimize your images quickly and easily. No installation required.",
+
+        stat1: "Free to use",
+        stat2: "Fast processing",
+        stat3: "Easy to use",
+
+        tools_title: "Online Image Tools",
+
+        tools_desc: "Everything you need to prepare your images for websites, social media and everyday use.",
+
+        convert_title: "Image Converter",
+        convert_desc: "Convert JPG, PNG and WebP images in seconds.",
+        convert_btn: "Convert Image",
+
+        compress_title: "Image Compressor",
+        compress_desc: "Reduce image size while keeping great visual quality.",
+        compress_btn: "Compress Image",
+
+        remove_title: "Background Remover",
+        remove_desc: "Remove backgrounds from your images automatically.",
+
+        png: "Convert to PNG",
+        jpg: "Convert to JPG",
+        webp: "Convert to WebP",
+
+        quality: "Quality (10–100)",
+
+        coming: "Coming Soon",
+
+        feature1_title: "Fast & Simple",
+        feature1_desc: "Get your results quickly with a simple workflow.",
+
+        feature2_title: "Privacy Friendly",
+        feature2_desc: "Your images are processed securely.",
+
+        feature3_title: "Available Worldwide",
+        feature3_desc: "Use our tools from any device, anywhere.",
+
+        articles_title: "Image Tips & Guides",
+        articles_desc: "Learn how to optimize, convert and use images more effectively.",
+
+        article_category: "Image Optimization",
+
+        article1_title: "How to Reduce Image Size Without Losing Quality",
+        article1_desc: "Learn the best ways to compress images for faster websites.",
+
+        article2_title: "JPG vs PNG vs WebP: Which Format Should You Use?",
+        article2_desc: "Compare popular image formats and find the right one.",
+
+        article3_title: "Why WebP Is Great for Modern Websites",
+        article3_desc: "Discover how modern image formats can improve page speed.",
+
+        footer_desc: "Simple and powerful online tools for converting, compressing and optimizing your images.",
+
+        footer_tools: "Tools",
+        footer_info: "Information",
+
+        privacy: "Privacy Policy",
+        contact: "Contact",
+
+        rights: "All rights reserved.",
+
+        title: "Online Image Tools | Convert, Compress & Edit Images"
+    },
+
+
+    fa: {
+        brand: "ابزار عکس",
+        nav_tools: "ابزارها",
+        nav_articles: "مقالات",
+        nav_about: "درباره ما",
+
+        badge: "ابزارهای رایگان آنلاین عکس",
+
+        hero1: "ابزارهای قدرتمند برای",
+        hero2: "تصاویر شما",
+
+        hero_desc: "عکس‌های خود را به‌سادگی تبدیل، فشرده و بهینه کنید؛ بدون نیاز به نصب نرم‌افزار.",
+
+        stat1: "رایگان",
+        stat2: "پردازش سریع",
+        stat3: "استفاده آسان",
+
+        tools_title: "ابزارهای آنلاین عکس",
+
+        tools_desc: "هر چیزی که برای آماده‌سازی تصاویر وب‌سایت، شبکه‌های اجتماعی و استفاده روزمره نیاز دارید.",
+
+        convert_title: "تبدیل فرمت عکس",
+        convert_desc: "تبدیل سریع تصاویر JPG، PNG و WebP.",
+        convert_btn: "تبدیل عکس",
+
+        compress_title: "فشرده‌سازی عکس",
+        compress_desc: "کاهش حجم عکس با حفظ کیفیت مناسب.",
+        compress_btn: "فشرده کن",
+
+        remove_title: "حذف بک‌گراند",
+        remove_desc: "حذف خودکار پس‌زمینه تصاویر.",
+
+        png: "تبدیل به PNG",
+        jpg: "تبدیل به JPG",
+        webp: "تبدیل به WebP",
+
+        quality: "کیفیت (۱۰ تا ۱۰۰)",
+
+        coming: "به‌زودی",
+
+        feature1_title: "سریع و ساده",
+        feature1_desc: "با چند کلیک نتیجه موردنظر خود را دریافت کنید.",
+
+        feature2_title: "امن و خصوصی",
+        feature2_desc: "تصاویر شما با امنیت پردازش می‌شوند.",
+
+        feature3_title: "قابل استفاده در سراسر جهان",
+        feature3_desc: "از هر دستگاه و هر مکانی استفاده کنید.",
+
+        articles_title: "راهنمای تصاویر",
+        articles_desc: "یاد بگیرید چگونه تصاویر خود را بهتر بهینه و استفاده کنید.",
+
+        article_category: "بهینه‌سازی تصاویر",
+
+        article1_title: "چگونه حجم عکس را بدون افت کیفیت کم کنیم؟",
+        article1_desc: "بهترین روش‌های فشرده‌سازی عکس برای افزایش سرعت سایت.",
+
+        article2_title: "JPG یا PNG یا WebP؛ کدام فرمت بهتر است؟",
+        article2_desc: "فرمت‌های محبوب تصاویر را مقایسه کنید و بهترین گزینه را انتخاب کنید.",
+
+        article3_title: "چرا WebP برای سایت‌های مدرن مناسب است؟",
+        article3_desc: "تأثیر فرمت‌های جدید تصویر بر سرعت سایت را بررسی کنید.",
+
+        footer_desc: "ابزارهای ساده و قدرتمند آنلاین برای تبدیل، فشرده‌سازی و بهینه‌سازی تصاویر.",
+
+        footer_tools: "ابزارها",
+        footer_info: "اطلاعات",
+
+        privacy: "حریم خصوصی",
+        contact: "تماس با ما",
+
+        rights: "تمامی حقوق محفوظ است.",
+
+        title: "ابزارهای آنلاین عکس | تبدیل، فشرده‌سازی و ویرایش"
+    },
+
+
+    ar: {
+        brand: "أدوات الصور",
+        nav_tools: "الأدوات",
+        nav_articles: "المقالات",
+        nav_about: "من نحن",
+
+        badge: "أدوات صور مجانية عبر الإنترنت",
+
+        hero1: "أدوات قوية لـ",
+        hero2: "صورك",
+
+        hero_desc: "حوّل واضغط وحسّن صورك بسرعة وسهولة دون الحاجة إلى تثبيت أي برنامج.",
+
+        stat1: "مجاني",
+        stat2: "معالجة سريعة",
+        stat3: "سهل الاستخدام",
+
+        tools_title: "أدوات الصور عبر الإنترنت",
+        tools_desc: "كل ما تحتاجه لتحضير صورك للمواقع الإلكترونية ووسائل التواصل الاجتماعي.",
+
+        convert_title: "تحويل الصور",
+        convert_desc: "تحويل صور JPG وPNG وWebP خلال ثوانٍ.",
+        convert_btn: "تحويل الصورة",
+
+        compress_title: "ضغط الصور",
+        compress_desc: "تقليل حجم الصورة مع الحفاظ على جودة جيدة.",
+        compress_btn: "ضغط الصورة",
+
+        remove_title: "إزالة الخلفية",
+        remove_desc: "إزالة خلفية الصور تلقائياً.",
+
+        png: "تحويل إلى PNG",
+        jpg: "تحويل إلى JPG",
+        webp: "تحويل إلى WebP",
+
+        quality: "الجودة (10–100)",
+
+        coming: "قريباً",
+
+        feature1_title: "سريع وبسيط",
+        feature1_desc: "احصل على نتائجك بسرعة وبخطوات بسيطة.",
+
+        feature2_title: "آمن",
+        feature2_desc: "تتم معالجة صورك بطريقة آمنة.",
+
+        feature3_title: "متاح عالمياً",
+        feature3_desc: "استخدم أدواتنا من أي جهاز ومن أي مكان.",
+
+        articles_title: "نصائح ودروس الصور",
+        articles_desc: "تعلم كيفية تحسين وتحويل واستخدام الصور بشكل أفضل.",
+
+        article_category: "تحسين الصور",
+
+        article1_title: "كيفية تقليل حجم الصورة دون فقدان الجودة",
+        article1_desc: "أفضل طرق ضغط الصور لتحسين سرعة المواقع.",
+
+        article2_title: "JPG أم PNG أم WebP؟ أي صيغة تختار؟",
+        article2_desc: "قارن بين أشهر صيغ الصور واختر الأنسب.",
+
+        article3_title: "لماذا يعتبر WebP مناسباً للمواقع الحديثة؟",
+        article3_desc: "اكتشف كيف تساعد صيغ الصور الحديثة في تحسين سرعة الموقع.",
+
+        footer_desc: "أدوات مجانية وبسيطة لتحويل وضغط وتحسين الصور.",
+
+        footer_tools: "الأدوات",
+        footer_info: "معلومات",
+
+        privacy: "سياسة الخصوصية",
+        contact: "اتصل بنا",
+
+        rights: "جميع الحقوق محفوظة.",
+
+        title: "أدوات الصور عبر الإنترنت | تحويل وضغط الصور"
+    },
+
+
+    es: {
+        brand: "ImageTools",
+        nav_tools: "Herramientas",
+        nav_articles: "Artículos",
+        nav_about: "Sobre nosotros",
+
+        badge: "Herramientas gratuitas para imágenes",
+
+        hero1: "Herramientas potentes para",
+        hero2: "tus imágenes",
+
+        hero_desc: "Convierte, comprime y optimiza tus imágenes de forma rápida y sencilla.",
+
+        stat1: "Gratis",
+        stat2: "Procesamiento rápido",
+        stat3: "Fácil de usar",
+
+        tools_title: "Herramientas de imágenes",
+        tools_desc: "Todo lo que necesitas para preparar tus imágenes para sitios web y redes sociales.",
+
+        convert_title: "Convertidor de imágenes",
+        convert_desc: "Convierte imágenes JPG, PNG y WebP en segundos.",
+        convert_btn: "Convertir imagen",
+
+        compress_title: "Compresor de imágenes",
+        compress_desc: "Reduce el tamaño de tus imágenes manteniendo una buena calidad.",
+        compress_btn: "Comprimir imagen",
+
+        remove_title: "Eliminar fondo",
+        remove_desc: "Elimina automáticamente el fondo de tus imágenes.",
+
+        png: "Convertir a PNG",
+        jpg: "Convertir a JPG",
+        webp: "Convertir a WebP",
+
+        quality: "Calidad (10–100)",
+
+        coming: "Próximamente",
+
+        feature1_title: "Rápido y sencillo",
+        feature1_desc: "Obtén tus resultados rápidamente.",
+
+        feature2_title: "Seguro",
+        feature2_desc: "Tus imágenes se procesan de forma segura.",
+
+        feature3_title: "Disponible en todo el mundo",
+        feature3_desc: "Utiliza nuestras herramientas desde cualquier dispositivo.",
+
+        articles_title: "Consejos y guías",
+        articles_desc: "Aprende a optimizar y utilizar mejor tus imágenes.",
+
+        article_category: "Optimización",
+
+        article1_title: "Cómo reducir el tamaño de una imagen sin perder calidad",
+        article1_desc: "Las mejores formas de comprimir imágenes.",
+
+        article2_title: "JPG vs PNG vs WebP: ¿Cuál deberías usar?",
+        article2_desc: "Compara los formatos de imagen más populares.",
+
+        article3_title: "Por qué WebP es ideal para sitios modernos",
+        article3_desc: "Descubre cómo mejorar la velocidad de tu sitio.",
+
+        footer_desc: "Herramientas online simples y potentes para tus imágenes.",
+
+        footer_tools: "Herramientas",
+        footer_info: "Información",
+
+        privacy: "Privacidad",
+        contact: "Contacto",
+
+        rights: "Todos los derechos reservados.",
+
+        title: "Herramientas de imágenes online | Convertir y comprimir"
+    },
+
+
+    de: {
+        brand: "ImageTools",
+        nav_tools: "Werkzeuge",
+        nav_articles: "Artikel",
+        nav_about: "Über uns",
+
+        badge: "Kostenlose Online-Bildtools",
+
+        hero1: "Leistungsstarke Tools für",
+        hero2: "Ihre Bilder",
+
+        hero_desc: "Bilder schnell und einfach konvertieren, komprimieren und optimieren.",
+
+        stat1: "Kostenlos",
+        stat2: "Schnelle Verarbeitung",
+        stat3: "Einfach zu bedienen",
+
+        tools_title: "Online-Bildtools",
+        tools_desc: "Alles, was Sie für Ihre Bilder auf Websites und sozialen Netzwerken benötigen.",
+
+        convert_title: "Bildkonverter",
+        convert_desc: "JPG-, PNG- und WebP-Bilder in Sekunden konvertieren.",
+        convert_btn: "Bild konvertieren",
+
+        compress_title: "Bildkompressor",
+        compress_desc: "Bildgröße reduzieren und dabei eine gute Qualität behalten.",
+        compress_btn: "Bild komprimieren",
+
+        remove_title: "Hintergrund entfernen",
+        remove_desc: "Hintergründe automatisch aus Bildern entfernen.",
+
+        png: "In PNG konvertieren",
+        jpg: "In JPG konvertieren",
+        webp: "In WebP konvertieren",
+
+        quality: "Qualität (10–100)",
+
+        coming: "Demnächst",
+
+        feature1_title: "Schnell & einfach",
+        feature1_desc: "Erhalten Sie Ihre Ergebnisse schnell.",
+
+        feature2_title: "Sicher",
+        feature2_desc: "Ihre Bilder werden sicher verarbeitet.",
+
+        feature3_title: "Weltweit verfügbar",
+        feature3_desc: "Nutzen Sie unsere Tools auf jedem Gerät.",
+
+        articles_title: "Bildtipps & Ratgeber",
+        articles_desc: "Lernen Sie, wie Sie Bilder besser optimieren und verwenden.",
+
+        article_category: "Bildoptimierung",
+
+        article1_title: "Bildgröße reduzieren ohne Qualitätsverlust",
+        article1_desc: "Die besten Methoden zur Bildkomprimierung.",
+
+        article2_title: "JPG vs PNG vs WebP: Welches Format ist besser?",
+        article2_desc: "Vergleichen Sie die beliebtesten Bildformate.",
+
+        article3_title: "Warum WebP ideal für moderne Websites ist",
+        article3_desc: "Erfahren Sie, wie moderne Bildformate die Ladezeit verbessern.",
+
+        footer_desc: "Einfache und leistungsstarke Online-Tools für Ihre Bilder.",
+
+        footer_tools: "Werkzeuge",
+        footer_info: "Informationen",
+
+        privacy: "Datenschutz",
+        contact: "Kontakt",
+
+        rights: "Alle Rechte vorbehalten.",
+
+        title: "Online-Bildtools | Bilder konvertieren und komprimieren"
+    }
+
+};
+
+
+function setLanguage(lang) {
+
+    const dictionary = translations[lang];
+
+    document.documentElement.lang = lang;
+
+    if (lang === "fa" || lang === "ar") {
+        document.documentElement.dir = "rtl";
+        document.body.classList.add("rtl");
+    } else {
+        document.documentElement.dir = "ltr";
+        document.body.classList.remove("rtl");
+    }
+
+    document.querySelectorAll("[data-i18n]").forEach(element => {
+
+        const key = element.dataset.i18n;
+
+        if (dictionary[key]) {
+            element.textContent = dictionary[key];
+        }
+
+    });
+
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(element => {
+
+        const key = element.dataset.i18nPlaceholder;
+
+        if (dictionary[key]) {
+            element.placeholder = dictionary[key];
+        }
+
+    });
+
+    document.title = dictionary.title;
+
+    localStorage.setItem("preferredLanguage", lang);
+}
+
+
+const languageSelector = document.getElementById("language");
+
+languageSelector.addEventListener("change", function () {
+    setLanguage(this.value);
+});
+
+
+const savedLanguage =
+    localStorage.getItem("preferredLanguage") || "en";
+
+languageSelector.value = savedLanguage;
+
+setLanguage(savedLanguage);
+
+</script>
 
 </body>
 </html>
+```
