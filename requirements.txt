@@ -1,8 +1,4 @@
 flask
 gunicorn
 pillow
-pypdf
-pikepdf
 werkzeug
-rembg
-onnxruntime
