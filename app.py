@@ -1,4 +1,3 @@
-```python
 from flask import Flask, render_template, request, send_file, abort
 from PIL import Image
 import io
@@ -7,11 +6,16 @@ import os
 import markdown
 import re
 
+
+# =========================================================
+# App
+# =========================================================
+
 app = Flask(__name__)
 
 
 # =========================================================
-# تنظیمات مسیر پروژه
+# Paths
 # =========================================================
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -23,7 +27,7 @@ ARTICLES_DIR = os.path.join(
 
 
 # =========================================================
-# صفحه اصلی
+# Home
 # =========================================================
 
 @app.route("/")
@@ -32,12 +36,12 @@ def index():
 
 
 # =========================================================
-# خواندن مقاله Markdown
+# Article System
 # =========================================================
 
 def load_article(language, slug):
     """
-    خواندن مقاله از:
+    Load article from:
 
     articles/{language}/{slug}.md
     """
@@ -48,32 +52,27 @@ def load_article(language, slug):
         f"{slug}.md"
     )
 
-    # جلوگیری از دسترسی به فایل‌های نامعتبر
+    # Article does not exist
     if not os.path.isfile(article_path):
         return None
 
     try:
-
         with open(
             article_path,
             "r",
             encoding="utf-8"
         ) as file:
-
             raw_content = file.read()
 
     except Exception:
         return None
 
-
     metadata = {}
-
     markdown_content = raw_content
 
-
-    # =====================================================
-    # خواندن Front Matter
-    # =====================================================
+    # -----------------------------------------------------
+    # Front Matter
+    # -----------------------------------------------------
 
     if raw_content.startswith("---"):
 
@@ -85,18 +84,13 @@ def load_article(language, slug):
         if len(parts) == 3:
 
             front_matter = parts[1].strip()
-
             markdown_content = parts[2].strip()
-
 
             for line in front_matter.splitlines():
 
                 line = line.strip()
 
-                if not line:
-                    continue
-
-                if ":" not in line:
+                if not line or ":" not in line:
                     continue
 
                 key, value = line.split(
@@ -105,10 +99,9 @@ def load_article(language, slug):
                 )
 
                 key = key.strip()
-
                 value = value.strip()
 
-                # حذف کوتیشن
+                # Remove quotation marks
                 if (
                     len(value) >= 2
                     and value[0] == value[-1]
@@ -118,10 +111,9 @@ def load_article(language, slug):
 
                 metadata[key] = value
 
-
-    # =====================================================
-    # تبدیل Markdown به HTML
-    # =====================================================
+    # -----------------------------------------------------
+    # Markdown → HTML
+    # -----------------------------------------------------
 
     html_content = markdown.markdown(
         markdown_content,
@@ -132,19 +124,16 @@ def load_article(language, slug):
         ]
     )
 
+    # -----------------------------------------------------
+    # Reading Time
+    # -----------------------------------------------------
 
-    # =====================================================
-    # محاسبه زمان مطالعه
-    # =====================================================
-
-    # حذف تقریبی HTML
     plain_text = re.sub(
         r"<[^>]+>",
         " ",
         html_content
     )
 
-    # شمارش کلمات
     words = re.findall(
         r"\b[\w'-]+\b",
         plain_text,
@@ -153,27 +142,22 @@ def load_article(language, slug):
 
     word_count = len(words)
 
-    # میانگین حدود 200 کلمه در دقیقه
+    # Approximately 200 words per minute
     reading_time = max(
         1,
         round(word_count / 200)
     )
 
-
-    # =====================================================
-    # اطلاعات تکمیلی مقاله
-    # =====================================================
+    # -----------------------------------------------------
+    # Article Metadata
+    # -----------------------------------------------------
 
     metadata["slug"] = slug
-
     metadata["language"] = language
-
     metadata["reading_time"] = reading_time
-
     metadata["word_count"] = word_count
 
-
-    # مقدار پیش‌فرض برای فیلدهای احتمالی
+    # Default values
     metadata.setdefault(
         "title",
         slug.replace("-", " ").title()
@@ -204,7 +188,6 @@ def load_article(language, slug):
         ""
     )
 
-
     return {
         "metadata": metadata,
         "content": html_content
@@ -212,7 +195,7 @@ def load_article(language, slug):
 
 
 # =========================================================
-# پیدا کردن تمام مقالات یک زبان
+# Get Articles
 # =========================================================
 
 def get_articles(language="en"):
@@ -224,44 +207,34 @@ def get_articles(language="en"):
 
     articles_list = []
 
-
-    # اگر پوشه وجود نداشت
+    # Language folder does not exist
     if not os.path.isdir(language_dir):
         return articles_list
 
-
     try:
-
         filenames = os.listdir(
             language_dir
         )
-
     except Exception:
-
         return articles_list
-
 
     for filename in filenames:
 
-        # فقط Markdown
+        # Markdown files only
         if not filename.lower().endswith(".md"):
             continue
 
-
         slug = filename[:-3]
-
 
         article = load_article(
             language,
             slug
         )
 
-
         if article:
 
             metadata = article["metadata"]
 
-            # URL مقاله
             metadata["url"] = (
                 f"/articles/{slug}"
             )
@@ -270,11 +243,7 @@ def get_articles(language="en"):
                 metadata
             )
 
-
-    # =====================================================
-    # مرتب‌سازی بر اساس تاریخ
-    # =====================================================
-
+    # Newest articles first
     articles_list.sort(
         key=lambda article: article.get(
             "date",
@@ -283,25 +252,22 @@ def get_articles(language="en"):
         reverse=True
     )
 
-
     return articles_list
 
 
 # =========================================================
-# صفحه لیست مقالات
+# Articles List
 # =========================================================
 
 @app.route("/articles")
 def articles():
 
-    # فعلاً زبان پیش‌فرض انگلیسی است
+    # Default language
     language = "en"
-
 
     articles_list = get_articles(
         language
     )
-
 
     return render_template(
         "articles.html",
@@ -311,38 +277,32 @@ def articles():
 
 
 # =========================================================
-# نمایش یک مقاله
+# Single Article
 # =========================================================
 
 @app.route("/articles/<slug>")
 def article(slug):
 
-    # فعلاً زبان پیش‌فرض انگلیسی است
+    # Default language
     language = "en"
-
 
     article_data = load_article(
         language,
         slug
     )
 
-
-    # مقاله وجود ندارد
     if article_data is None:
         abort(404)
 
-
     return render_template(
         "article.html",
-
         article=article_data["metadata"],
-
         content=article_data["content"]
     )
 
 
 # =========================================================
-# تبدیل فرمت عکس
+# Image Format Converter
 # =========================================================
 
 @app.route(
@@ -353,24 +313,19 @@ def convert_image():
 
     try:
 
-        # بررسی وجود فایل
+        # Check file
         if "file" not in request.files:
-            return (
-                "فایلی انتخاب نشده",
-                400
-            )
-
+            return "No file selected", 400
 
         file = request.files["file"]
 
-
+        # Target format
         target_format = request.form.get(
             "format",
             "png"
         ).lower()
 
-
-        # فرمت‌های مجاز
+        # Allowed formats
         allowed_formats = {
             "jpg",
             "jpeg",
@@ -378,54 +333,34 @@ def convert_image():
             "webp"
         }
 
-
         if target_format not in allowed_formats:
+            return "Invalid image format", 400
 
-            return (
-                "فرمت انتخاب شده معتبر نیست",
-                400
-            )
-
-
-        # بررسی نام فایل
+        # Empty filename
         if file.filename == "":
-            return (
-                "فایل خالی است",
-                400
-            )
+            return "Empty file", 400
 
-
-        # باز کردن تصویر
+        # Open image
         img = Image.open(
             file.stream
         )
 
-
-        # =================================================
-        # تبدیل برای JPG
-        # =================================================
+        # -------------------------------------------------
+        # Handle transparency when converting to JPG
+        # -------------------------------------------------
 
         if (
-            target_format in ["jpg", "jpeg"]
-            and img.mode in [
-                "RGBA",
-                "LA",
-                "P"
-            ]
+            target_format in ("jpg", "jpeg")
+            and img.mode in ("RGBA", "LA", "P")
         ):
 
-            # ایجاد پس‌زمینه سفید
             background = Image.new(
                 "RGB",
                 img.size,
                 "white"
             )
 
-
-            if img.mode in [
-                "RGBA",
-                "LA"
-            ]:
+            if img.mode in ("RGBA", "LA"):
 
                 background.paste(
                     img,
@@ -434,52 +369,35 @@ def convert_image():
 
             else:
 
-                background.paste(
-                    img
-                )
-
+                background.paste(img)
 
             img = background
 
-
-        # =================================================
-        # ذخیره در حافظه
-        # =================================================
+        # -------------------------------------------------
+        # Save image
+        # -------------------------------------------------
 
         output = io.BytesIO()
 
-
-        if target_format in [
-            "jpg",
-            "jpeg"
-        ]:
-
-            save_format = "JPEG"
-
-        else:
-
-            save_format = target_format.upper()
-
+        save_format = (
+            "JPEG"
+            if target_format in ("jpg", "jpeg")
+            else target_format.upper()
+        )
 
         img.save(
             output,
             format=save_format
         )
 
-
         output.seek(0)
 
-
-        # =================================================
-        # نام فایل خروجی
-        # =================================================
-
+        # Output extension
         extension = (
             "jpg"
             if target_format == "jpeg"
             else target_format
         )
-
 
         filename = (
             f"converted_"
@@ -487,11 +405,7 @@ def convert_image():
             f"{extension}"
         )
 
-
-        # =================================================
-        # MIME Type
-        # =================================================
-
+        # MIME type
         mimetype = {
             "jpg": "image/jpeg",
             "jpeg": "image/jpeg",
@@ -499,28 +413,23 @@ def convert_image():
             "webp": "image/webp"
         }[target_format]
 
-
         return send_file(
             output,
-
             as_attachment=True,
-
             download_name=filename,
-
             mimetype=mimetype
         )
-
 
     except Exception as e:
 
         return (
-            f"خطا در تبدیل عکس: {str(e)}",
+            f"Image conversion error: {str(e)}",
             500
         )
 
 
 # =========================================================
-# فشرده‌سازی عکس
+# Image Compressor
 # =========================================================
 
 @app.route(
@@ -531,67 +440,43 @@ def compress_image():
 
     try:
 
-        # بررسی وجود فایل
+        # Check file
         if "file" not in request.files:
-
-            return (
-                "فایلی انتخاب نشده",
-                400
-            )
-
+            return "No file selected", 400
 
         file = request.files["file"]
 
-
-        # دریافت کیفیت
+        # Get quality
         try:
-
             quality = int(
                 request.form.get(
                     "quality",
                     70
                 )
             )
-
         except ValueError:
-
             quality = 70
 
-
-        # محدود کردن Quality
+        # Limit quality
         quality = max(
             10,
-            min(
-                quality,
-                100
-            )
+            min(quality, 100)
         )
 
-
-        # بررسی نام فایل
+        # Empty filename
         if file.filename == "":
+            return "Empty file", 400
 
-            return (
-                "فایل خالی است",
-                400
-            )
-
-
-        # باز کردن تصویر
+        # Open image
         img = Image.open(
             file.stream
         )
 
+        # -------------------------------------------------
+        # Convert to RGB
+        # -------------------------------------------------
 
-        # =================================================
-        # تبدیل به RGB
-        # =================================================
-
-        if img.mode in [
-            "RGBA",
-            "LA",
-            "P"
-        ]:
+        if img.mode in ("RGBA", "LA", "P"):
 
             background = Image.new(
                 "RGB",
@@ -599,11 +484,7 @@ def compress_image():
                 "white"
             )
 
-
-            if img.mode in [
-                "RGBA",
-                "LA"
-            ]:
+            if img.mode in ("RGBA", "LA"):
 
                 background.paste(
                     img,
@@ -612,45 +493,28 @@ def compress_image():
 
             else:
 
-                background.paste(
-                    img
-                )
-
+                background.paste(img)
 
             img = background
 
-
         elif img.mode != "RGB":
 
-            img = img.convert(
-                "RGB"
-            )
+            img = img.convert("RGB")
 
-
-        # =================================================
-        # ذخیره JPEG در حافظه
-        # =================================================
+        # -------------------------------------------------
+        # Compress
+        # -------------------------------------------------
 
         output = io.BytesIO()
 
-
         img.save(
             output,
-
             format="JPEG",
-
             quality=quality,
-
             optimize=True
         )
 
-
         output.seek(0)
-
-
-        # =================================================
-        # نام فایل
-        # =================================================
 
         filename = (
             f"compressed_"
@@ -658,28 +522,23 @@ def compress_image():
             ".jpg"
         )
 
-
         return send_file(
             output,
-
             as_attachment=True,
-
             download_name=filename,
-
             mimetype="image/jpeg"
         )
-
 
     except Exception as e:
 
         return (
-            f"خطا در فشرده‌سازی عکس: {str(e)}",
+            f"Image compression error: {str(e)}",
             500
         )
 
 
 # =========================================================
-# صفحه 404
+# 404 Page
 # =========================================================
 
 @app.errorhandler(404)
@@ -691,12 +550,19 @@ def page_not_found(error):
 
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport"
-              content="width=device-width, initial-scale=1.0">
+
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+        >
 
         <title>404 - Page Not Found</title>
 
         <style>
+
+            * {
+                box-sizing: border-box;
+            }
 
             body {
                 margin: 0;
@@ -706,7 +572,11 @@ def page_not_found(error):
                 align-items: center;
                 justify-content: center;
 
-                font-family: Arial, sans-serif;
+                padding: 20px;
+
+                font-family:
+                    Arial,
+                    sans-serif;
 
                 background: #f6f8fc;
 
@@ -716,24 +586,29 @@ def page_not_found(error):
             }
 
             .box {
-                background: white;
+                width: 100%;
+                max-width: 500px;
 
-                padding: 50px;
+                padding: 50px 30px;
+
+                background: #ffffff;
 
                 border-radius: 20px;
 
                 box-shadow:
                     0 20px 50px
-                    rgba(0,0,0,.08);
+                    rgba(0, 0, 0, 0.08);
             }
 
             h1 {
-                font-size: 64px;
-
                 margin: 0 0 10px;
+
+                font-size: 64px;
             }
 
             p {
+                margin-bottom: 25px;
+
                 color: #64748b;
             }
 
@@ -773,7 +648,7 @@ def page_not_found(error):
 
 
 # =========================================================
-# اجرای برنامه
+# Run Application
 # =========================================================
 
 if __name__ == "__main__":
@@ -788,4 +663,3 @@ if __name__ == "__main__":
         ),
         debug=True
     )
-```
