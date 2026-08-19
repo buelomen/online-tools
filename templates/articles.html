@@ -1,1 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>Articles | ImageTools</title>
+
+    <meta name="description"
+          content="Learn about image optimization, compression, formats and website performance.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, sans-serif;
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        .container {
+            width: min(1100px, calc(100% - 40px));
+            margin: auto;
+        }
+
+        header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 20px 0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 800;
+            color: #4f46e5;
+        }
+
+        .back {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 80px 0 55px;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            color: #64748b;
+            max-width: 650px;
+            margin: auto;
+            line-height: 1.8;
+        }
+
+        .articles {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            padding-bottom: 90px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: .25s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, .1);
+        }
+
+        .image {
+            height: 180px;
+            display: grid;
+            place-items: center;
+            font-size: 50px;
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
+        }
+
+        .content {
+            padding: 24px;
+        }
+
+        .category {
+            color: #4f46e5;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 20px;
+            line-height: 1.4;
+            margin: 0 0 10px;
+        }
+
+        .description {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .read {
+            display: inline-block;
+            margin-top: 18px;
+            color: #4f46e5;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        @media(max-width: 800px) {
+            .articles {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media(max-width: 550px) {
+            .articles {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container header">
+
+        <div class="logo">
+            ImageTools
+        </div>
+
+        <a href="/" class="back">
+            ← Back to tools
+        </a>
+
+    </div>
+</header>
+
+
+<section class="hero">
+
+    <div class="container">
+
+        <h1>Image Tips & Guides</h1>
+
+        <p>
+            Learn how to optimize, compress, convert and use images
+            more effectively for websites and everyday use.
+        </p>
+
+    </div>
+
+</section>
+
+
+<main class="container">
+
+    <div class="articles">
+
+        {% for article in articles %}
+
+        <article class="card">
+
+            <div class="image">
+                🖼️
+            </div>
+
+            <div class="content">
+
+                <div class="category">
+                    {{ article.category }}
+                </div>
+
+                <h2>
+                    {{ article.title }}
+                </h2>
+
+                <div class="description">
+                    {{ article.description }}
+                </div>
+
+                <a
+                    href="/articles/{{ article.slug }}"
+                    class="read"
+                >
+                    Read Article →
+                </a>
+
+            </div>
+
+        </article>
+
+        {% endfor %}
+
+    </div>
+
+</main>
+
+</body>
+</html>
